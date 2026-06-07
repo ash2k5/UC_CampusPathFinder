@@ -173,3 +173,28 @@ describe('runAStar', () => {
     expect(r.pathNodeIds).toEqual([1, 3, 2]);
   });
 });
+
+describe('graph robustness', () => {
+  it('buildBaseGraph skips ways with missing or non-array nodes', () => {
+    const data = { elements: [
+      { type: 'node', id: 1, lat: 39.1, lon: -84.5 },
+      { type: 'way', id: 5 },              // no nodes property
+      { type: 'way', id: 6, nodes: [1] },  // single node, no edge
+    ]};
+    const { nodes, edges } = buildBaseGraph(data);
+    expect(nodes.size).toBe(1);
+    expect(edges.size).toBe(0);
+  });
+
+  it('buildRoutingGraph skips degenerate shortcuts', () => {
+    const base = buildBaseGraph(sampleOsm);
+    const shortcuts = { type: 'FeatureCollection', features: [
+      { id: 'empty', geometry: { type: 'LineString', coordinates: [] } },
+      { id: 'single', geometry: { type: 'LineString', coordinates: [[-84.5, 39.1]] } },
+      { id: 'noGeom' },
+    ]};
+    const g = buildRoutingGraph(base, shortcuts);
+    expect(g.syntheticToFeatureId.size).toBe(0);
+    expect(g.nodes.size).toBe(base.nodes.size);
+  });
+});

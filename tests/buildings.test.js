@@ -12,6 +12,11 @@ describe('searchBuildings', () => {
     expect(results.some(b => b.name === 'Langsam Library')).toBe(true);
   });
 
+  it('ignores surrounding whitespace', () => {
+    const results = searchBuildings('  langsam  ');
+    expect(results.some(b => b.name === 'Langsam Library')).toBe(true);
+  });
+
   it('matches by category', () => {
     const results = searchBuildings('parking');
     expect(results.length).toBeGreaterThan(0);

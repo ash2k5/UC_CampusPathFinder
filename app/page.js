@@ -583,6 +583,8 @@ export default function Page() {
       <main className="flex-1 w-full h-full relative z-10">
         <div
           ref={mapContainer}
+          role="application"
+          aria-label="Campus map"
           className="absolute inset-0 w-full h-full bg-slate-100"
           style={{ cursor: isDrawing ? 'crosshair' : 'grab' }}
         />

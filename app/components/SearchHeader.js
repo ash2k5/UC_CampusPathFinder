@@ -12,6 +12,7 @@ export default function SearchHeader({ searchQuery, searchResults, onSearchInput
             value={searchQuery}
             onChange={onSearchInput}
             placeholder="Search campus buildings..."
+            aria-label="Search campus buildings"
             className="w-full bg-transparent outline-none px-2 font-medium text-slate-700"
           />
           {searchResults.length > 0 && (

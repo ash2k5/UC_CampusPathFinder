@@ -15,7 +15,7 @@ export default function DirectionsPanel({
           </p>
           <h3 className="font-bold text-slate-800 text-sm leading-tight">{destination.name}</h3>
         </div>
-        <button onClick={onClear} className="text-slate-400 hover:text-slate-600 p-1">
+        <button onClick={onClear} aria-label="Close directions" className="text-slate-400 hover:text-slate-600 p-1">
           <X size={16} />
         </button>
       </div>
@@ -29,10 +29,11 @@ export default function DirectionsPanel({
             value={startQuery}
             onChange={onStartInput}
             placeholder="Your location (GPS)"
+            aria-label="Starting point"
             className="flex-1 bg-transparent outline-none text-sm text-slate-700 font-medium"
           />
           {startLocation && (
-            <button onClick={onClearStart} className="text-slate-400 hover:text-slate-600">
+            <button onClick={onClearStart} aria-label="Clear starting point" className="text-slate-400 hover:text-slate-600">
               <X size={13} />
             </button>
           )}

@@ -67,6 +67,7 @@ export default function LoginScreen() {
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="Email"
+            aria-label="Email"
             required
             className="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 font-medium outline-none focus:ring-2 focus:ring-blue-200 text-sm"
           />
@@ -75,10 +76,11 @@ export default function LoginScreen() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder={authMode === 'signup' ? 'Password (min 6 characters)' : 'Password'}
+            aria-label="Password"
             required
             className="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-700 font-medium outline-none focus:ring-2 focus:ring-blue-200 text-sm"
           />
-          {error && <p className="text-xs text-red-500 font-semibold px-1">{error}</p>}
+          {error && <p role="alert" className="text-xs text-red-500 font-semibold px-1">{error}</p>}
           <button
             type="submit"
             disabled={isLoggingIn}

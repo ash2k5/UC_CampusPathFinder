@@ -37,6 +37,17 @@ yarn-error.log*
 # vercel
 .vercel
 
+# firebase emulator
+.firebase/
+*-debug.log
+firebase-export-*
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

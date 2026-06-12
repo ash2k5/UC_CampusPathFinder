@@ -19,6 +19,47 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run lint
       - run: npm test
+        # NEXT_PUBLIC_* bake in at build time; real values live in Vercel's
+        # Preview/Production env. Placeholders here keep the build deterministic.
       - run: npm run build
+        env:
+          NEXT_PUBLIC_FIREBASE_API_KEY: ci-build-placeholder
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ci-build.example.com
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ci-build
+          NEXT_PUBLIC_FIREBASE_APP_ID: ci-build
+
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm install -g firebase-tools
+      - run: npm run test:rules
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm install -g firebase-tools
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

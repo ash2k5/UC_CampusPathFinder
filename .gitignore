@@ -47,6 +47,7 @@ firebase-export-*
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.playwright-mcp/
 
 # typescript
 *.tsbuildinfo

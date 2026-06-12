@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-campus \"vitest run --config vitest.rules.config.mjs\"",
+    "test:e2e": "firebase emulators:exec --only auth,firestore --project demo-campus \"playwright test\""
   },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.3",
@@ -19,6 +21,8 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.1",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -30,6 +34,7 @@
     "vitest": "^4.1.8"
   },
   "overrides": {
-    "postcss": "^8.5.10"
+    "postcss": "^8.5.10",
+    "@grpc/grpc-js": "~1.9.16"
   }
 }

@@ -105,12 +105,3 @@ proxy route (with `fetch` mocked), and the React components.
 npm run build
 npm run start
 ```
-
-## Deployment (Vercel)
-
-1. Push to GitHub and import the repository at https://vercel.com/new (Next.js is auto-detected).
-2. Add the `NEXT_PUBLIC_FIREBASE_*` values from `.env.example` under Project Settings >
-   Environment Variables.
-3. In the Firebase console, add the Vercel domain under Authentication > Settings >
-   Authorized domains.
-4. Deploy, then deploy the Firestore rules once with `npx firebase deploy --only firestore:rules`.

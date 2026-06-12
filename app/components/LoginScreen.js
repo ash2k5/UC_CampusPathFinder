@@ -33,7 +33,9 @@ export default function LoginScreen() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
     } catch (err) {
-      const fallback = authMode === 'login' ? 'Login failed. Check your credentials.' : `Sign up failed: ${err.code}`;
+      const fallback = authMode === 'login'
+        ? 'Login failed. Check your credentials.'
+        : 'Could not create account — please try again.';
       setError(AUTH_ERRORS[err.code] || fallback);
       setIsLoggingIn(false);
     }

@@ -42,4 +42,27 @@ describe('LoginScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: /create account/i }));
     expect(screen.getByPlaceholderText(/min 6 characters/i)).toBeInTheDocument();
   });
+
+  it('shows a generic signup fallback without leaking the raw error code', async () => {
+    signUp.mockRejectedValueOnce({ code: 'auth/internal-error' });
+    const { container } = render(<LoginScreen />);
+    fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret1' } });
+    fireEvent.submit(container.querySelector('form'));
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('Could not create account');
+    expect(alert).not.toHaveTextContent('auth/');
+  });
+
+  it('maps a known signup error code to a friendly message', async () => {
+    signUp.mockRejectedValueOnce({ code: 'auth/email-already-in-use' });
+    const { container } = render(<LoginScreen />);
+    fireEvent.click(screen.getByRole('button', { name: /create account/i }));
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'a@b.com' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret1' } });
+    fireEvent.submit(container.querySelector('form'));
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('already exists');
+  });
 });

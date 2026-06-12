@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/ash2k5/UC_CampusPathFinder/actions/workflows/ci.yml/badge.svg)](https://github.com/ash2k5/UC_CampusPathFinder/actions/workflows/ci.yml)
 
+Live: https://uc-campus-path-finder-beryl.vercel.app
+
 A walking-navigation web app for the University of Cincinnati campus. Search buildings, get
 pedestrian routes computed on real OpenStreetMap walkways, and let admins draw custom shortcut
 paths that are folded into the routing graph in real time.

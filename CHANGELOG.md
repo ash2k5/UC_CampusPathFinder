@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## 2026-06-12
 
 ### Security
 - Pin `@grpc/grpc-js` to `1.9.16` via `overrides` to clear a high-severity transitive CVE

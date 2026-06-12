@@ -21,9 +21,12 @@ const WALKABLE = new Set([
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 let cache = { at: 0, data: null };
 
+// Let Vercel's edge cache the static walk network across serverless instances.
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=3600' };
+
 export async function GET() {
   if (cache.data && Date.now() - cache.at < CACHE_TTL_MS) {
-    return Response.json(cache.data);
+    return Response.json(cache.data, { headers: CACHE_HEADERS });
   }
 
   for (const endpoint of ENDPOINTS) {
@@ -53,14 +56,14 @@ export async function GET() {
         continue;
       }
 
-      // Keep only walkable ways + all nodes
+      // Keep all nodes + walkable ways that carry a node list
       data.elements = data.elements.filter(el =>
         el.type === 'node' ||
-        (el.type === 'way' && WALKABLE.has(el.tags?.highway))
+        (el.type === 'way' && Array.isArray(el.nodes) && WALKABLE.has(el.tags?.highway))
       );
 
       cache = { at: Date.now(), data };
-      return Response.json(data);
+      return Response.json(data, { headers: CACHE_HEADERS });
     } catch (err) {
       console.error(`${endpoint} failed:`, err.message);
     }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { haversineDistance } from '../app/routing.js';
-import { buildBaseGraph, findNearestNode, buildRoutingGraph, runAStar, buildSpatialIndex } from '../app/graph.js';
+import { buildBaseGraph, findNearestNode, buildRoutingGraph, runAStar, buildSpatialIndex, buildOsmOverlay, planRoute } from '../app/graph.js';
 
 const sampleOsm = {
   elements: [
@@ -157,6 +157,26 @@ describe('runAStar', () => {
     expect(runAStar(ns, es, 1, 2)).toBeNull();
   });
 
+  it('breaks equal-cost ties deterministically by node id, not insertion order', () => {
+    // Two equal-cost paths 1-2-4 and 1-3-4. Nodes 2 and 3 are equidistant
+    // from goal 4, so f-scores tie; node 1 lists neighbor 3 before 2.
+    const ns = new Map([
+      [1, { lat: 0, lon: 0 }],
+      [2, { lat: 0, lon: 0.001 }],
+      [3, { lat: 0, lon: -0.001 }],
+      [4, { lat: 0.002, lon: 0 }],
+    ]);
+    const es = new Map([
+      [1, [{ neighborId: 3, distance: 10 }, { neighborId: 2, distance: 10 }]],
+      [2, [{ neighborId: 1, distance: 10 }, { neighborId: 4, distance: 10 }]],
+      [3, [{ neighborId: 1, distance: 10 }, { neighborId: 4, distance: 10 }]],
+      [4, [{ neighborId: 2, distance: 10 }, { neighborId: 3, distance: 10 }]],
+    ]);
+    const r = runAStar(ns, es, 1, 4);
+    expect(r.totalDistM).toBe(20);
+    expect(r.pathNodeIds).toEqual([1, 2, 4]);
+  });
+
   it('prefers the cheaper of two routes', () => {
     const ns = new Map([
       [1, { lat: 0, lon: 0 }],
@@ -171,6 +191,107 @@ describe('runAStar', () => {
     const r = runAStar(ns, es, 1, 2);
     expect(r.totalDistM).toBe(20);
     expect(r.pathNodeIds).toEqual([1, 3, 2]);
+  });
+});
+
+describe('buildOsmOverlay', () => {
+  it('builds a LineString per way from resolved node coords', () => {
+    const fc = buildOsmOverlay(sampleOsm);
+    expect(fc.type).toBe('FeatureCollection');
+    expect(fc.features).toHaveLength(1);
+    expect(fc.features[0].geometry).toEqual({
+      type: 'LineString',
+      coordinates: [[-84.5, 39.1], [-84.5, 39.101], [-84.5, 39.102]],
+    });
+  });
+
+  it('skips a way whose nodes property is missing or not an array', () => {
+    const data = { elements: [
+      { type: 'node', id: 1, lat: 39.1, lon: -84.5 },
+      { type: 'node', id: 2, lat: 39.101, lon: -84.5 },
+      { type: 'way', id: 5 },                 // no nodes property
+      { type: 'way', id: 6, nodes: 'oops' },  // nodes not an array
+      { type: 'way', id: 7, nodes: [1, 2] },  // valid
+    ]};
+    const fc = buildOsmOverlay(data);
+    expect(fc.features).toHaveLength(1);
+    expect(fc.features[0].geometry.coordinates).toHaveLength(2);
+  });
+
+  it('drops ways that resolve to fewer than two known nodes', () => {
+    const data = { elements: [
+      { type: 'node', id: 1, lat: 39.1, lon: -84.5 },
+      { type: 'way', id: 8, nodes: [1, 999] },  // 999 unknown -> 1 coord
+    ]};
+    expect(buildOsmOverlay(data).features).toHaveLength(0);
+  });
+});
+
+describe('planRoute', () => {
+  const graph = buildRoutingGraph(buildBaseGraph(sampleOsm), { type: 'FeatureCollection', features: [] });
+
+  it('routes from a start point to a destination building', () => {
+    const plan = planRoute(graph, 39.1000, -84.5000, { lat: 39.1020, lng: -84.5000 });
+    expect(plan.error).toBeUndefined();
+    expect(plan.coords).toEqual([[-84.5, 39.1], [-84.5, 39.101], [-84.5, 39.102]]);
+    expect(plan.usedShortcutIds.size).toBe(0);
+    expect(plan.totalDistM).toBeCloseTo(
+      haversineDistance(39.1, -84.5, 39.101, -84.5) + haversineDistance(39.101, -84.5, 39.102, -84.5), 6);
+    expect(typeof plan.distanceMiles).toBe('string');
+    expect(plan.durationMin).toBeGreaterThan(0);
+  });
+
+  it('snaps to the destination entrance nearest the start', () => {
+    const dest = { lat: 39.3000, lng: -84.5000, entrances: [
+      { lat: 39.1020, lng: -84.5000 }, // node 3, near the start
+      { lat: 39.3000, lng: -84.5000 }, // far away
+    ]};
+    const plan = planRoute(graph, 39.1000, -84.5000, dest);
+    expect(plan.error).toBeUndefined();
+    expect(plan.coords.at(-1)).toEqual([-84.5, 39.102]);
+  });
+
+  it('reports start-too-far when the start has no nearby node', () => {
+    const plan = planRoute(graph, 39.5000, -84.5000, { lat: 39.1020, lng: -84.5000 });
+    expect(plan.error).toBe('start-too-far');
+  });
+
+  it('reports dest-not-found when the destination has no nearby node', () => {
+    const plan = planRoute(graph, 39.1000, -84.5000, { lat: 39.5000, lng: -84.5000 });
+    expect(plan.error).toBe('dest-not-found');
+  });
+
+  it('reports no-route when the snapped nodes are disconnected', () => {
+    const nodes = new Map([
+      [1, { lat: 39.1000, lon: -84.5000 }],
+      [2, { lat: 39.1005, lon: -84.5000 }],
+    ]);
+    const edges = new Map([[1, []], [2, []]]);
+    const g = { nodes, edges, index: buildSpatialIndex(nodes), syntheticToFeatureId: new Map() };
+    expect(planRoute(g, 39.1000, -84.5000, { lat: 39.1005, lng: -84.5000 }).error).toBe('no-route');
+  });
+
+  it('reports the shortcut feature ids traversed by the route', () => {
+    const nodes = new Map([
+      [1, { lat: 39.1000, lon: -84.5000 }],
+      ['sc:A:0', { lat: 39.1003, lon: -84.5000 }],
+      ['sc:A:1', { lat: 39.1006, lon: -84.5000 }],
+      [2, { lat: 39.1009, lon: -84.5000 }],
+    ]);
+    const edges = new Map([
+      [1, [{ neighborId: 'sc:A:0', distance: 30 }]],
+      ['sc:A:0', [{ neighborId: 1, distance: 30 }, { neighborId: 'sc:A:1', distance: 30 }]],
+      ['sc:A:1', [{ neighborId: 'sc:A:0', distance: 30 }, { neighborId: 2, distance: 30 }]],
+      [2, [{ neighborId: 'sc:A:1', distance: 30 }]],
+    ]);
+    const g = {
+      nodes, edges,
+      index: buildSpatialIndex(nodes),
+      syntheticToFeatureId: new Map([['sc:A:0', 'A'], ['sc:A:1', 'A']]),
+    };
+    const plan = planRoute(g, 39.1000, -84.5000, { lat: 39.1009, lng: -84.5000 });
+    expect(plan.error).toBeUndefined();
+    expect([...plan.usedShortcutIds]).toEqual(['A']);
   });
 });
 

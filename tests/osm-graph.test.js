@@ -31,6 +31,19 @@ describe('GET /api/osm-graph', () => {
     const body = await res.json();
     expect(body.elements.filter(e => e.type === 'way').map(e => e.id)).toEqual([10]);
     expect(body.elements.some(e => e.type === 'node' && e.id === 1)).toBe(true);
+    expect(res.headers.get('cache-control')).toMatch(/s-maxage=86400/);
+  });
+
+  it('drops a walkable way that is missing its nodes list', async () => {
+    const payload = { elements: [
+      { type: 'node', id: 1, lat: 39.13, lon: -84.51 },
+      { type: 'way', id: 12, tags: { highway: 'footway' } },        // no nodes
+      { type: 'way', id: 13, nodes: [1], tags: { highway: 'path' } }, // valid
+    ]};
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okJson(payload)));
+    const res = await (await loadGet())();
+    const body = await res.json();
+    expect(body.elements.filter(e => e.type === 'way').map(e => e.id)).toEqual([13]);
   });
 
   it('falls through to the next endpoint when one responds with an error', async () => {

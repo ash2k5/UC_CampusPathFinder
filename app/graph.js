@@ -1,6 +1,7 @@
 import { haversineDistance } from './routing';
 
-// Min-heap priority queue
+// Min-heap priority queue. Ties on distance break by node id so the
+// chosen path is deterministic regardless of heap insertion order.
 class MinHeap {
   constructor() { this.h = []; }
   get size() { return this.h.length; }
@@ -11,10 +12,14 @@ class MinHeap {
     if (this.h.length) { this.h[0] = last; this._down(0); }
     return top;
   }
+  _less(a, b) {
+    if (a.d !== b.d) return a.d < b.d;
+    return ('' + a.id) < ('' + b.id);
+  }
   _up(i) {
     while (i > 0) {
       const p = (i - 1) >> 1;
-      if (this.h[p].d <= this.h[i].d) break;
+      if (!this._less(this.h[i], this.h[p])) break;
       [this.h[p], this.h[i]] = [this.h[i], this.h[p]]; i = p;
     }
   }
@@ -22,8 +27,8 @@ class MinHeap {
     const n = this.h.length;
     while (true) {
       let s = i, l = 2*i+1, r = 2*i+2;
-      if (l < n && this.h[l].d < this.h[s].d) s = l;
-      if (r < n && this.h[r].d < this.h[s].d) s = r;
+      if (l < n && this._less(this.h[l], this.h[s])) s = l;
+      if (r < n && this._less(this.h[r], this.h[s])) s = r;
       if (s === i) break;
       [this.h[s], this.h[i]] = [this.h[i], this.h[s]]; i = s;
     }
@@ -57,6 +62,23 @@ export function buildBaseGraph(osmData) {
   }
 
   return { nodes, edges };
+}
+
+// FeatureCollection of LineStrings for every walkable OSM way (map overlay)
+export function buildOsmOverlay(osmData) {
+  const nodeMap = new Map();
+  for (const el of osmData.elements) {
+    if (el.type === 'node') nodeMap.set(el.id, [el.lon, el.lat]);
+  }
+  const features = [];
+  for (const el of osmData.elements) {
+    if (el.type !== 'way' || !Array.isArray(el.nodes)) continue;
+    const coords = el.nodes.map(id => nodeMap.get(id)).filter(Boolean);
+    if (coords.length >= 2) {
+      features.push({ type: 'Feature', geometry: { type: 'LineString', coordinates: coords }, properties: {} });
+    }
+  }
+  return { type: 'FeatureCollection', features };
 }
 
 const CELL_DEG = 0.003;
@@ -203,4 +225,47 @@ export function runAStar(nodes, edges, startId, endId) {
     .map(n => [n.lon, n.lat]);
 
   return { coords, pathNodeIds, totalDistM: gScore.get(endId) ?? 0 };
+}
+
+const WALK_SPEED_MS = 1.4; // average walking pace
+
+// Plan a walking route from a start point to a destination building,
+// snapping to the destination entrance nearest the start. Returns
+// { coords, usedShortcutIds, totalDistM, distanceMiles, durationMin } or
+// { error: 'start-too-far' | 'dest-not-found' | 'no-route' }.
+export function planRoute(graph, fromLat, fromLng, destination) {
+  let destLat = destination.lat, destLng = destination.lng;
+  if (destination.entrances?.length) {
+    let best = null, bestDist = Infinity;
+    for (const e of destination.entrances) {
+      const d = Math.hypot(e.lat - fromLat, e.lng - fromLng);
+      if (d < bestDist) { bestDist = d; best = e; }
+    }
+    if (best) { destLat = best.lat; destLng = best.lng; }
+  }
+
+  const startNodeId = findNearestNode(graph.nodes, fromLat, fromLng, 500, graph.index);
+  if (!startNodeId) return { error: 'start-too-far' };
+  const endNodeId = findNearestNode(graph.nodes, destLat, destLng, 500, graph.index);
+  if (!endNodeId) return { error: 'dest-not-found' };
+
+  const result = runAStar(graph.nodes, graph.edges, startNodeId, endNodeId);
+  if (!result) return { error: 'no-route' };
+
+  const { coords, pathNodeIds, totalDistM } = result;
+
+  const usedShortcutIds = new Set();
+  for (let i = 0; i < pathNodeIds.length - 1; i++) {
+    const fid1 = graph.syntheticToFeatureId?.get(pathNodeIds[i]);
+    const fid2 = graph.syntheticToFeatureId?.get(pathNodeIds[i + 1]);
+    if (fid1 && fid1 === fid2) usedShortcutIds.add(fid1);
+  }
+
+  return {
+    coords,
+    usedShortcutIds,
+    totalDistM,
+    distanceMiles: (totalDistM * 0.000621371).toFixed(2),
+    durationMin: Math.ceil(totalDistM / WALK_SPEED_MS / 60),
+  };
 }

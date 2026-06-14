@@ -13,6 +13,11 @@
   typed `RoutePlan`, so the boundary casts in `page` are gone. With no `app/*.js` left, the vitest
   JSX-in-.js transform plugin was removed.
 
+### Docs
+- README: note the TypeScript + `@ash2k5/cinematic-ds` stack, fix the architecture file paths to
+  `.ts`/`.tsx`, require Node 20, and document the `read:packages` `NODE_AUTH_TOKEN` needed to install
+  the private design-system package, plus the emulator-backed `test:rules`/`test:e2e` suites.
+
 ## 2026-06-12
 
 ### Security

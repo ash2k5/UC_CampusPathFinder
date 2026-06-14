@@ -5,9 +5,13 @@
 ### Changed
 - Migrate the UI layer to TypeScript and rebuild it on the shared `@ash2k5/cinematic-ds` design
   system (Cinematic Editorial), with light + dark themes and a persisted, no-flash theme toggle.
-  Components, `page`, `layout`, and `firebase` are now `.tsx`/`.ts`; the routing, map, and data
-  modules stay `.js`, typed at the boundary in `app/types.ts`. The map keeps the interface register
-  (glass panels over the live map, no aurora); the login screen is the editorial surface.
+  Components, `page`, `layout`, and `firebase` are now `.tsx`/`.ts`. The map keeps the interface
+  register (glass panels over the live map, no aurora); the login screen is the editorial surface.
+- Migrate the routing, map, and data modules to TypeScript (`graph`, `routing`, `buildings`,
+  `constants`, the OSM proxy route, and the `useAuth`/`useShortcuts`/`useRouting`/`useCampusMap`
+  hooks). The graph carries real `NodeId`/`GraphNode`/`RoutingGraph` types and `planRoute` returns a
+  typed `RoutePlan`, so the boundary casts in `page` are gone. With no `app/*.js` left, the vitest
+  JSX-in-.js transform plugin was removed.
 
 ## 2026-06-12
 

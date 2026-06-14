@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { haversineDistance } from '../app/routing.js';
+import { haversineDistance } from '../app/routing';
 
 describe('haversineDistance', () => {
   it('is zero for identical points', () => {

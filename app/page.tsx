@@ -22,13 +22,7 @@ import DirectionsPanel from "./components/DirectionsPanel";
 import AdminPanel from "./components/AdminPanel";
 import LoginScreen from "./components/LoginScreen";
 import LoadingScreen from "./components/LoadingScreen";
-import type {
-  Building,
-  RouteInfo,
-  ToastMessage,
-  CampusMap,
-  RoutePlan,
-} from "./types";
+import type { Building, RouteInfo, ToastMessage } from "./types";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
@@ -88,7 +82,7 @@ export default function Page() {
       selectBuildingRef,
       setSelectedPathId,
       showToast,
-    }) as unknown as CampusMap;
+    });
 
   // Keep refs in sync with state
   useEffect(() => {
@@ -251,7 +245,7 @@ export default function Page() {
         return;
       }
 
-      const plan = planRoute(graph, fromLat, fromLng, destination) as RoutePlan;
+      const plan = planRoute(graph, fromLat, fromLng, destination);
       if (plan.error) {
         const message =
           plan.error === "start-too-far"

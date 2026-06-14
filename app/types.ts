@@ -1,20 +1,37 @@
-import type { RefObject } from "react";
+export interface Entrance {
+  lat: number;
+  lng: number;
+}
 
 export interface Building {
   name: string;
   category: string;
   lat: number;
   lng: number;
+  entrances?: Entrance[];
 }
 
-// Boundary types for the still-JS map hook and routing core (migrated later).
-export interface CampusMap {
-  mapContainer: RefObject<HTMLDivElement | null>;
-  map: RefObject<any>;
-  draw: RefObject<any>;
-  maplibreRef: RefObject<any>;
-  isDrawing: boolean;
-  setIsDrawing: (value: boolean) => void;
+export interface RouteDestination {
+  lat: number;
+  lng: number;
+  entrances?: Entrance[];
+}
+
+export interface ShortcutGeometry {
+  type: string;
+  coordinates: [number, number][];
+}
+
+export interface ShortcutFeature {
+  type: "Feature";
+  id: string;
+  geometry?: ShortcutGeometry;
+  properties?: Record<string, unknown>;
+}
+
+export interface ShortcutCollection {
+  type: "FeatureCollection";
+  features: ShortcutFeature[];
 }
 
 export type RoutePlan =
@@ -23,7 +40,8 @@ export type RoutePlan =
       error?: undefined;
       coords: [number, number][];
       usedShortcutIds: Set<string>;
-      distanceMiles: number;
+      totalDistM: number;
+      distanceMiles: string;
       durationMin: number;
     };
 

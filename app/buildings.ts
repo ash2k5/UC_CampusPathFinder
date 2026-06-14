@@ -1,5 +1,7 @@
+import type { Building } from "./types";
+
 // Coordinates from OpenStreetMap, accurate as of 2026
-export const UC_BUILDINGS = [
+export const UC_BUILDINGS: Building[] = [
   // Academic Buildings
   { name: "Aronoff Center", category: "Academic", lng: -84.5187107, lat: 39.1343389 },
   { name: "Arts & Sciences Hall", category: "Academic", lng: -84.5190848, lat: 39.1318708 },
@@ -123,7 +125,7 @@ export const UC_BUILDINGS = [
   { name: "Goodman Street Garage", category: "Parking", lng: -84.5030536, lat: 39.1363966 },
 ];
 
-export function searchBuildings(query) {
+export function searchBuildings(query: string): Building[] {
   const q = query.toLowerCase().trim();
   if (q.length < 2) return [];
   return UC_BUILDINGS.filter(b =>

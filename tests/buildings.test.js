@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { searchBuildings, UC_BUILDINGS } from '../app/buildings.js';
+import { searchBuildings, UC_BUILDINGS } from '../app/buildings';
 
 describe('searchBuildings', () => {
   it('returns nothing for queries shorter than two characters', () => {

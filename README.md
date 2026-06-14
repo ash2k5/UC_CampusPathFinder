@@ -8,8 +8,8 @@ A walking-navigation web app for the University of Cincinnati campus. Search bui
 pedestrian routes computed on real OpenStreetMap walkways, and let admins draw custom shortcut
 paths that are folded into the routing graph in real time.
 
-Built with Next.js (App Router), React 19, MapLibre GL, Tailwind CSS, and Firebase
-(Authentication + Cloud Firestore).
+Built with Next.js (App Router), React 19, TypeScript, MapLibre GL, and Firebase (Authentication +
+Cloud Firestore), on the shared `@ash2k5/cinematic-ds` design system (Tailwind v4, light + dark).
 
 ## Features
 
@@ -22,24 +22,31 @@ Built with Next.js (App Router), React 19, MapLibre GL, Tailwind CSS, and Fireba
 
 - `app/api/osm-graph` proxies the Overpass API server-side to avoid CORS. It filters to walkable
   ways, falls back across three Overpass endpoints, and caches the result for 24 hours.
-- `app/graph.js` parses the OSM ways into a node/edge graph, builds a lat/lon grid spatial index
+- `app/graph.ts` parses the OSM ways into a node/edge graph, builds a lat/lon grid spatial index
   for nearest-node lookups, merges admin shortcuts as synthetic nodes/edges, and runs A*.
-- `app/buildings.js` holds the building catalog and the search.
-- `app/hooks` wrap Firebase auth state and the live Firestore shortcuts subscription.
-- `app/components` are presentational; `app/page.js` wires the map, routing, and Firestore together.
+- `app/buildings.ts` holds the building catalog and the search.
+- `app/hooks` wrap Firebase auth, the live Firestore shortcuts subscription, the routing graph, and
+  the MapLibre map lifecycle.
+- `app/components` are presentational; `app/page.tsx` wires the map, routing, and Firestore together.
+- `app/globals.css` + `app/theme.css` adopt the `@ash2k5/cinematic-ds` design system: tokens, the
+  Bodoni/Inter fonts, and a persisted light/dark theme that swaps via `[data-theme]`.
 
 ## Prerequisites
 
-- Node.js 18.18 or newer
+- Node.js 20 or newer
+- A GitHub token with `read:packages` (the UI depends on the private `@ash2k5/cinematic-ds` package
+  on GitHub Packages; the repo `.npmrc` reads it from `NODE_AUTH_TOKEN`)
 - A Firebase project (free Spark plan is sufficient) with:
   - Email/Password authentication enabled
   - A Cloud Firestore database
 
 ## Setup
 
-1. Install dependencies:
+1. Install dependencies. Set `NODE_AUTH_TOKEN` to a GitHub token with `read:packages` first so the
+   private `@ash2k5/cinematic-ds` package resolves:
 
    ```bash
+   export NODE_AUTH_TOKEN=<github token with read:packages>
    npm install
    ```
 
@@ -92,12 +99,15 @@ appear for accounts listed in the `admins` collection (see setup step 5).
 ## Testing
 
 ```bash
-npm test       # vitest: unit + component tests
-npm run lint   # eslint
+npm test            # vitest: unit + component tests
+npm run lint        # eslint
+npm run test:rules  # Firestore rules against the emulator (needs Java + Firebase CLI)
+npm run test:e2e    # Playwright E2E against a production build (needs Java + Firebase CLI)
 ```
 
 Coverage spans the routing graph (A*, spatial index, shortcut merge), building search, the Overpass
-proxy route (with `fetch` mocked), and the React components.
+proxy route (with `fetch` mocked), and the React components. The rules and E2E suites run under the
+Firebase emulator; CI runs all four on every push.
 
 ## Production build
 

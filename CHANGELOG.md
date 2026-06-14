@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-06-14
+
+### Changed
+- Migrate the UI layer to TypeScript and rebuild it on the shared `@ash2k5/cinematic-ds` design
+  system (Cinematic Editorial), with light + dark themes and a persisted, no-flash theme toggle.
+  Components, `page`, `layout`, and `firebase` are now `.tsx`/`.ts`; the routing, map, and data
+  modules stay `.js`, typed at the boundary in `app/types.ts`. The map keeps the interface register
+  (glass panels over the live map, no aurora); the login screen is the editorial surface.
+
 ## 2026-06-12
 
 ### Security

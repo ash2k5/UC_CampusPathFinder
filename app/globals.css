@@ -1,7 +1,13 @@
 @import "tailwindcss";
+@import "@ash2k5/cinematic-ds/preset.css";
+@import "@ash2k5/cinematic-ds/recipes.css";
+@import "./theme.css";
 
-/* Ensure the map takes up the full screen */
-html, body, #root {
+/* Generate the Tailwind utilities the DS components use. */
+@source "../node_modules/@ash2k5/cinematic-ds/dist";
+
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;

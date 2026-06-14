@@ -1,7 +1,12 @@
 // Haversine distance in meters
-export function haversineDistance(lat1, lon1, lat2, lon2) {
+export function haversineDistance(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number,
+): number {
   const R = 6371000;
-  const toRad = (x) => (x * Math.PI) / 180;
+  const toRad = (x: number) => (x * Math.PI) / 180;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
   const a =

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { haversineDistance } from '../app/routing.js';
-import { buildBaseGraph, findNearestNode, buildRoutingGraph, runAStar, buildSpatialIndex, buildOsmOverlay, planRoute } from '../app/graph.js';
+import { haversineDistance } from '../app/routing';
+import { buildBaseGraph, findNearestNode, buildRoutingGraph, runAStar, buildSpatialIndex, buildOsmOverlay, planRoute } from '../app/graph';
 
 const sampleOsm = {
   elements: [

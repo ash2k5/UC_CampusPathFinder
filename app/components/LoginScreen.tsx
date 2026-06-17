@@ -12,7 +12,7 @@ import { auth } from "../lib/firebase";
 const AUTH_ERRORS: Record<string, string> = {
   "auth/invalid-credential": "Invalid email or password.",
   "auth/invalid-email": "Enter a valid email address.",
-  "auth/too-many-requests": "Too many attempts — try again later.",
+  "auth/too-many-requests": "Too many attempts. Try again later.",
   "auth/user-not-found": "No account found with that email.",
   "auth/wrong-password": "Incorrect password.",
   "auth/email-already-in-use": "An account with that email already exists.",
@@ -48,7 +48,7 @@ export default function LoginScreen() {
       const code = (err as { code?: string })?.code ?? "";
       const fallback = isLogin
         ? "Login failed. Check your credentials."
-        : "Could not create account — please try again.";
+        : "Could not create account. Please try again.";
       setError(AUTH_ERRORS[code] || fallback);
       setIsLoggingIn(false);
     }
@@ -71,7 +71,7 @@ export default function LoginScreen() {
         <ThemeToggle />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm ds-glass ds-glass--floating p-8">
+      <section aria-label="Sign in" className="relative z-10 w-full max-w-sm ds-glass ds-glass--floating p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="grid size-11 place-items-center bg-primary text-on-primary shrink-0">
             <MapIcon size={22} aria-hidden />
@@ -158,7 +158,7 @@ export default function LoginScreen() {
                 : "Create Account"}
           </Button>
         </form>
-      </div>
+      </section>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { shortcutFeatures } from '../app/hooks/useShortcuts';
+import { shortcutFeatures } from '../src/hooks/useShortcuts';
 
 // Minimal stand-in for a Firestore QueryDocumentSnapshot
 const docOf = (id, data) => ({ id, data: () => data });

@@ -1,4 +1,4 @@
-import type { Building } from "./types";
+import type { Building } from "../types";
 
 // Coordinates from OpenStreetMap, accurate as of 2026
 export const UC_BUILDINGS: Building[] = [

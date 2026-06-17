@@ -1,5 +1,5 @@
 import { Users, MousePointer2, Plus, Trash2 } from "lucide-react";
-import { Button } from "@ash2k5/cinematic-ds";
+import { Button } from "@ash2k5/ui";
 
 interface AdminPanelProps {
   isDrawing: boolean;

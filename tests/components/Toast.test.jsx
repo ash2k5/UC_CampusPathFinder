@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
-import Toast from '../../app/components/Toast';
+import Toast from '../../src/components/Toast';
 
 describe('Toast', () => {
   it('renders nothing when there is no toast', () => {

@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { Button, Input, ThemeToggle } from "@ash2k5/cinematic-ds";
+import { Button, Input, ThemeToggle } from "@ash2k5/ui";
 import { auth } from "../lib/firebase";
 
 const AUTH_ERRORS: Record<string, string> = {

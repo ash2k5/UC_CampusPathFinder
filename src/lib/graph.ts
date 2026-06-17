@@ -1,5 +1,5 @@
 import { haversineDistance } from "./routing";
-import type { RouteDestination, RoutePlan, ShortcutCollection } from "./types";
+import type { RouteDestination, RoutePlan, ShortcutCollection } from "../types";
 
 export type NodeId = number | string;
 

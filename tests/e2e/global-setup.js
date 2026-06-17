@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { initializeTestEnvironment } from '@firebase/rules-unit-testing';
 import { doc, setDoc } from 'firebase/firestore';
 
-// Mirrors APP_ID in app/lib/firebase.js
+// Mirrors APP_ID in src/lib/firebase.ts
 const APP_ID = 'campus-nav-v1';
 
 export const ADMIN_EMAIL = 'admin@test.dev';

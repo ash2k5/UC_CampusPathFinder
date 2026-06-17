@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 import { Map as MapIcon, ShieldCheck } from "lucide-react";
-import { Badge, Button, ThemeToggle } from "@ash2k5/cinematic-ds";
+import { Badge, Button, ThemeToggle } from "@ash2k5/ui";
 import CategoryIcon from "./CategoryIcon";
 import type { Building } from "../types";
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { buildBaseGraph, buildRoutingGraph, buildOsmOverlay } from "../graph";
-import type { BaseGraph, RoutingGraph, OsmOverlay, OsmData } from "../graph";
+import { buildBaseGraph, buildRoutingGraph, buildOsmOverlay } from "../lib/graph";
+import type { BaseGraph, RoutingGraph, OsmOverlay, OsmData } from "../lib/graph";
 import type { ShortcutCollection } from "../types";
 
 // Loads the OSM walk network, keeps the routing graph (OSM + shortcuts) in

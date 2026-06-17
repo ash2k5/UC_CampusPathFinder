@@ -3,7 +3,7 @@ import { beforeAll, afterAll, beforeEach, describe, it } from 'vitest';
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
 
-// Mirrors APP_ID in app/lib/firebase.js
+// Mirrors APP_ID in src/lib/firebase.ts
 const APP_ID = 'campus-nav-v1';
 const ADMIN = 'admin-uid';
 const OTHER = 'other-uid';

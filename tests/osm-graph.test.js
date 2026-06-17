@@ -18,7 +18,7 @@ const sample = {
 
 // The route module keeps an in-memory cache, so reload it per test for isolation.
 async function loadGet() {
-  return (await import('../app/api/osm-graph/route')).GET;
+  return (await import('../src/app/api/osm-graph/route')).GET;
 }
 
 describe('GET /api/osm-graph', () => {

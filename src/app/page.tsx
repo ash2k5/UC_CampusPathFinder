@@ -8,21 +8,21 @@ import {
   type ChangeEvent,
 } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
-import { db, APP_ID } from "./lib/firebase";
-import { EMPTY_GEOJSON } from "./lib/constants";
-import { searchBuildings } from "./buildings";
-import { planRoute } from "./graph";
-import { useAuth } from "./hooks/useAuth";
-import { useShortcuts } from "./hooks/useShortcuts";
-import { useRouting } from "./hooks/useRouting";
-import { useCampusMap } from "./hooks/useCampusMap";
-import Toast from "./components/Toast";
-import SearchHeader from "./components/SearchHeader";
-import DirectionsPanel from "./components/DirectionsPanel";
-import AdminPanel from "./components/AdminPanel";
-import LoginScreen from "./components/LoginScreen";
-import LoadingScreen from "./components/LoadingScreen";
-import type { Building, RouteInfo, ToastMessage } from "./types";
+import { db, APP_ID } from "../lib/firebase";
+import { EMPTY_GEOJSON } from "../lib/constants";
+import { searchBuildings } from "../lib/buildings";
+import { planRoute } from "../lib/graph";
+import { useAuth } from "../hooks/useAuth";
+import { useShortcuts } from "../hooks/useShortcuts";
+import { useRouting } from "../hooks/useRouting";
+import { useCampusMap } from "../hooks/useCampusMap";
+import Toast from "../components/Toast";
+import SearchHeader from "../components/SearchHeader";
+import DirectionsPanel from "../components/DirectionsPanel";
+import AdminPanel from "../components/AdminPanel";
+import LoginScreen from "../components/LoginScreen";
+import LoadingScreen from "../components/LoadingScreen";
+import type { Building, RouteInfo, ToastMessage } from "../types";
 
 import "maplibre-gl/dist/maplibre-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";

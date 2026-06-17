@@ -12,7 +12,7 @@ vi.mock('firebase/auth', () => ({
   createUserWithEmailAndPassword: (...args) => signUp(...args),
 }));
 
-import LoginScreen from '../../app/components/LoginScreen';
+import LoginScreen from '../../src/components/LoginScreen';
 
 describe('LoginScreen', () => {
   beforeEach(() => {

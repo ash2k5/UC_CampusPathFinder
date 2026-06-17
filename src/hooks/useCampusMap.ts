@@ -12,9 +12,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { type User } from "firebase/auth";
 import { db, APP_ID } from "../lib/firebase";
 import { CAMPUS_CENTER, MAP_STYLE, EMPTY_GEOJSON } from "../lib/constants";
-import { UC_BUILDINGS } from "../buildings";
+import { UC_BUILDINGS } from "../lib/buildings";
 import type { Building, ShortcutCollection } from "../types";
-import type { OsmOverlay } from "../graph";
+import type { OsmOverlay } from "../lib/graph";
 
 interface UseCampusMapParams {
   isAdmin: boolean;

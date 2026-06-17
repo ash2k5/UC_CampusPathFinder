@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import '@testing-library/jest-dom/vitest';
 import { render } from '@testing-library/react';
-import CategoryIcon from '../../app/components/CategoryIcon';
+import CategoryIcon from '../../src/components/CategoryIcon';
 
 describe('CategoryIcon', () => {
   it('renders the icon mapped to a known category', () => {

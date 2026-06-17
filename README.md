@@ -7,7 +7,7 @@ shortcuts that fold into the routing graph live.
 https://uc-campus-path-finder-beryl.vercel.app
 
 Built with Next.js, React, TypeScript, MapLibre, and Firebase (Auth + Firestore), on the
-shared `@ash2k5/cinematic-ds` design system (light + dark).
+shared `@ash2k5/ui` design system (light + dark).
 
 ## Run locally
 

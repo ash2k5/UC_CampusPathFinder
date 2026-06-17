@@ -1,10 +1,10 @@
 @import "tailwindcss";
-@import "@ash2k5/cinematic-ds/preset.css";
-@import "@ash2k5/cinematic-ds/recipes.css";
+@import "@ash2k5/ui/preset.css";
+@import "@ash2k5/ui/recipes.css";
 @import "./theme.css";
 
 /* Generate the Tailwind utilities the DS components use. */
-@source "../node_modules/@ash2k5/cinematic-ds/dist";
+@source "../../node_modules/@ash2k5/ui/dist";
 
 html,
 body {

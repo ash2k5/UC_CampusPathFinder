@@ -1,38 +1,38 @@
-# uc campuspathfinder
+# UC CampusPathFinder
 
-a walking-navigation web app for the university of cincinnati campus. search buildings,
-get pedestrian routes computed on real openstreetmap walkways, and (as an admin) draw
-custom shortcuts that fold into the routing graph live.
+A walking-navigation web app for the University of Cincinnati campus. Search buildings, get
+pedestrian routes computed on real OpenStreetMap walkways, and (as an admin) draw custom
+shortcuts that fold into the routing graph live.
 
 https://uc-campus-path-finder-beryl.vercel.app
 
-built with next.js, react, typescript, maplibre, and firebase (auth + firestore), on the
+Built with Next.js, React, TypeScript, MapLibre, and Firebase (Auth + Firestore), on the
 shared `@ash2k5/cinematic-ds` design system (light + dark).
 
-## run locally
+## Run locally
 
-needs node 20+ and a firebase project (the free spark plan is fine) with email/password
-auth and a cloud firestore database enabled.
+Needs Node 20+ and a Firebase project (the free Spark plan is fine) with email/password auth
+and a Cloud Firestore database enabled.
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in your firebase web config
+cp .env.example .env.local   # fill in your Firebase web config
 npm run dev
 ```
 
-the `NEXT_PUBLIC_FIREBASE_*` values come from firebase console > project settings > your
-apps. they're public web config, not secrets; firestore rules control access. open
+The `NEXT_PUBLIC_FIREBASE_*` values come from the Firebase console > Project settings > Your
+apps. They're public web config, not secrets; Firestore rules control access. Open
 http://localhost:3000 and sign in with an account you create in the app.
 
-admin controls (drawing shortcuts) need the firestore rules deployed
-(`firebase deploy --only firestore:rules`) and your user id added as a document at
-`admins/{your-uid}` in firestore.
+Admin controls (drawing shortcuts) need the Firestore rules deployed
+(`firebase deploy --only firestore:rules`) and your user ID added as a document at
+`admins/{your-uid}` in Firestore.
 
-## tests
+## Tests
 
 ```bash
 npm test            # unit + component tests
 npm run lint
-npm run test:rules  # firestore rules against the emulator (needs java + firebase cli)
-npm run test:e2e    # playwright against a production build (needs java + firebase cli)
+npm run test:rules  # Firestore rules against the emulator (needs Java + Firebase CLI)
+npm run test:e2e    # Playwright against a production build (needs Java + Firebase CLI)
 ```

@@ -1,0 +1,31 @@
+name: uc-campus
+
+services:
+  emulator:
+    build:
+      context: .
+      dockerfile: firebase.Dockerfile
+    ports:
+      - "9099:9099"
+      - "8080:8080"
+    volumes:
+      - ./firestore.rules:/app/firestore.rules
+      - ./firestore.indexes.json:/app/firestore.indexes.json
+
+  web:
+    build:
+      context: .
+      target: dev
+    environment:
+      NEXT_PUBLIC_FIREBASE_USE_EMULATOR: "true"
+      NEXT_PUBLIC_FIREBASE_API_KEY: demo-key
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: demo-campus
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: demo-campus.firebaseapp.com
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - emulator

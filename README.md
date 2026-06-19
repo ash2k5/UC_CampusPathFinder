@@ -28,6 +28,21 @@ Admin controls (drawing shortcuts) need the Firestore rules deployed
 (`firebase deploy --only firestore:rules`) and your user ID added as a document at
 `admins/{your-uid}` in Firestore.
 
+## Run with Docker
+
+Runs the app against the Firebase emulators, so no real Firebase project or local Java is
+needed (just Docker Desktop running):
+
+```bash
+docker compose up --build
+```
+
+Production build:
+
+```bash
+docker compose -f compose.prod.yaml up --build
+```
+
 ## Tests
 
 ```bash

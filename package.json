@@ -13,17 +13,17 @@
   },
   "dependencies": {
     "@ash2k5/ui": "^1.0.1",
-    "@mapbox/mapbox-gl-draw": "^1.4.3",
-    "firebase": "^12.8.0",
+    "@mapbox/mapbox-gl-draw": "^1.5.1",
+    "firebase": "^12.15.0",
     "lucide-react": "^0.562.0",
     "maplibre-gl": "^4.7.1",
-    "next": "16.2.7",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.1",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -32,11 +32,11 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^9",
-    "eslint-config-next": "16.2.7",
+    "eslint-config-next": "16.2.9",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   },
   "overrides": {
     "postcss": "^8.5.10",
